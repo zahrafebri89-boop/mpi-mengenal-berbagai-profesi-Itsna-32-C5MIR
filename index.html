@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MPI Kelas 1 SD - Mengenal Berbagai Profesi</title>
+<style>
+  *{box-sizing:border-box}
+  body{
+    margin:0;font-family:Arial,Helvetica,sans-serif;
+    background:linear-gradient(135deg,#fff8f5,#eef4ff);
+    color:#29344d;
+  }
+  .app{max-width:900px;margin:auto;min-height:100vh;background:#fffdfc}
+  header{padding:16px 22px 10px;background:#eaf1ff;position:sticky;top:0;z-index:10}
+  .top{display:flex;justify-content:space-between;align-items:center;font-weight:700;color:#334b82}
+  .progress{height:9px;background:#fff;margin-top:10px;border-radius:20px;overflow:hidden}
+  .bar{height:100%;width:20%;background:linear-gradient(90deg,#ff9f9f,#8ea7ff);transition:.4s}
+  nav{display:flex;gap:10px;overflow:auto;padding:12px 8px;background:#fff}
+  nav button{border:0;background:#f7f5ff;border-radius:28px;padding:10px 16px;white-space:nowrap;font-size:15px;cursor:pointer}
+  nav button.active{background:#e7eaff;outline:3px solid #526aa5}
+  main{padding:22px}
+  .page{display:none;animation:fade .45s ease}
+  .page.active{display:block}
+  @keyframes fade{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+  .hero{
+    background:linear-gradient(145deg,#f1efff,#eaf5ff);
+    border-radius:28px;padding:28px;min-height:540px;
+    box-shadow:0 10px 25px #00000012;position:relative;overflow:hidden;
+  }
+  .badge{display:inline-block;background:#ffb8a8;padding:9px 15px;border-radius:18px;font-weight:700}
+  h1{font-size:42px;line-height:1.12;color:#3f4f91;margin:22px 0 12px}
+  h2{color:#3f4f91;font-size:30px}
+  p{font-size:18px;line-height:1.55}
+  .name{background:#fff;padding:12px 16px;border-radius:16px;display:inline-block;margin:8px 0}
+  .btn{border:0;border-radius:18px;padding:14px 22px;font-size:18px;font-weight:700;cursor:pointer;background:#ff7f70;color:#fff;box-shadow:0 5px 0 #d87965}
+  .btn:active{transform:translateY(3px);box-shadow:0 2px 0 #db7219}
+  .scene{height:190px;display:flex;justify-content:center;align-items:end;gap:18px;margin-top:10px}
+  .character{font-size:70px;animation:bounce 2s ease-in-out infinite}
+  .character:nth-child(2){animation-delay:.3s}.character:nth-child(3){animation-delay:.6s}
+  @keyframes bounce{0%,100%{transform:translateY(0) rotate(-2deg)}50%{transform:translateY(-18px) rotate(2deg)}}
+  .cloud{position:absolute;font-size:55px;opacity:.65;animation:cloud 10s linear infinite}
+  .cloud.one{top:40px;left:-60px}.cloud.two{top:120px;right:-70px;animation-delay:4s}
+  @keyframes cloud{from{transform:translateX(0)}to{transform:translateX(980px)}}
+  .cards{display:grid;grid-template-columns:repeat(2,1fr);gap:15px}
+  .card{
+    background:#fff;border-radius:22px;padding:18px;text-align:center;
+    box-shadow:0 7px 18px #00000010;border:2px solid #edf0e9;
+    transition:.25s;cursor:pointer
+  }
+  .card:hover{transform:translateY(-5px)}
+.cards .card:nth-child(3n+1){background:#f0f5ff}.cards .card:nth-child(3n+2){background:#fff1ee}.cards .card:nth-child(3n){background:#f4efff}
+  .emoji{font-size:65px;display:block;animation:float 2.4s ease-in-out infinite}
+  @keyframes float{50%{transform:translateY(-8px)}}
+  .card h3{margin:8px 0;color:#3f4f91}
+  .tip{background:#fff0ea;border-left:7px solid #ff9d8c;border-radius:15px;padding:15px;margin:18px 0}
+  .quiz{background:#f0f3ff;border-radius:22px;padding:20px;margin:14px 0}
+  .option{display:block;width:100%;text-align:left;border:2px solid #dce8ee;background:#fff;border-radius:14px;padding:13px;margin:9px 0;font-size:17px;cursor:pointer}
+  .option:hover{background:#f3efff}
+  .correct{background:#dff4ff!important;border-color:#6c9dd8!important}
+  .wrong{background:#ffe1e8!important;border-color:#e47b91!important}
+  .feedback{font-weight:700;min-height:25px;margin-top:8px}
+  .score{font-size:25px;font-weight:800;color:#3f4f91}
+  .memory{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+  .memory .mini{background:#f4f0ff;border-radius:18px;padding:15px;text-align:center}
+  footer{text-align:center;padding:20px;color:#7b8299}
+  @media(max-width:650px){
+    h1{font-size:32px}.cards{grid-template-columns:1fr}.memory{grid-template-columns:1fr}
+    main{padding:15px}.hero{padding:20px}.scene{height:150px}.character{font-size:58px}
+  }
+</style>
+</head>
+<body>
+<div class="app">
+<header>
+  <div class="top"><span>👣 IPAS/Bahasa Indonesia Kelas 1 SD — Mengenal Profesi</span><span id="pct">20%</span></div>
+  <div class="progress"><div class="bar" id="bar"></div></div>
+</header>
+
+<nav>
+  <button class="active" onclick="showPage('home',this)">🏠 Beranda</button>
+  <button onclick="showPage('tujuan',this)">🎯 Tujuan</button>
+  <button onclick="showPage('materi',this)">📚 Materi</button>
+  <button onclick="showPage('permainan',this)">🎮 Permainan</button>
+  <button onclick="showPage('kuis',this)">📝 Kuis</button>
+</nav>
+
+<main>
+<section id="home" class="page active">
+  <div class="hero">
+    <div class="cloud one">☁️</div><div class="cloud two">☁️</div>
+    <span class="badge">🌟 Kelas 1 SD</span>
+    <h1>Yuk, Mengenal<br>Berbagai Profesi!</h1>
+    <p style="color:#637da8;font-size:21px">Media Pembelajaran Interaktif</p>
+    <div class="name">Nama: ____________________ &nbsp; | &nbsp; Kelas: 1 SD</div>
+    <p>Di sini kamu akan mengenal berbagai pekerjaan, tempat bekerja, dan tugas orang-orang dalam profesinya. Ada materi, permainan, dan kuis seru! 🚀</p>
+    <button class="btn" onclick="showPage('tujuan',document.querySelectorAll('nav button')[1])">🚀 Mulai Belajar</button>
+    <div class="scene">
+      <div class="character">👩‍⚕️</div><div class="character">👨‍🚒</div><div class="character">👩‍🏫</div><div class="character">👨‍🍳</div>
+    </div>
+  </div>
+</section>
+
+<section id="tujuan" class="page">
+  <h2>🎯 Tujuan Pembelajaran</h2>
+  <div class="tip">Setelah belajar, kamu diharapkan dapat:</div>
+  <div class="cards">
+    <div class="card"><span class="emoji">👀</span><h3>Mengenal</h3><p>Menyebutkan berbagai macam profesi.</p></div>
+    <div class="card"><span class="emoji">💡</span><h3>Memahami</h3><p>Menjelaskan tugas sederhana dari suatu profesi.</p></div>
+    <div class="card"><span class="emoji">🏫</span><h3>Menghubungkan</h3><p>Menentukan tempat seseorang bekerja.</p></div>
+    <div class="card"><span class="emoji">❤️</span><h3>Menghargai</h3><p>Menghargai setiap pekerjaan yang bermanfaat bagi orang lain.</p></div>
+  </div>
+  <br><button class="btn" onclick="showPage('materi',document.querySelectorAll('nav button')[2])">Lanjut ke Materi ➜</button>
+</section>
+
+<section id="materi" class="page">
+  <h2>📚 Materi: Mengenal Profesi</h2>
+  <p>Profesi adalah pekerjaan yang dilakukan seseorang untuk membantu memenuhi kebutuhan hidup dan bermanfaat bagi orang lain.</p>
+  <div class="cards">
+    <div class="card"><span class="emoji">👩‍🏫</span><h3>Guru</h3><p>Mengajar dan membantu siswa belajar di sekolah.</p><b>🏫 Tempat: Sekolah</b></div>
+    <div class="card"><span class="emoji">👨‍⚕️</span><h3>Dokter</h3><p>Memeriksa dan membantu mengobati orang yang sakit.</p><b>🏥 Tempat: Rumah sakit/klinik</b></div>
+    <div class="card"><span class="emoji">👨‍🚒</span><h3>Pemadam Kebakaran</h3><p>Memadamkan kebakaran dan membantu saat keadaan darurat.</p><b>🚒 Tempat: Pos pemadam</b></div>
+    <div class="card"><span class="emoji">👨‍🍳</span><h3>Koki</h3><p>Memasak dan menyiapkan makanan.</p><b>🍳 Tempat: Dapur/restoran</b></div>
+    <div class="card"><span class="emoji">👮</span><h3>Polisi</h3><p>Menjaga keamanan dan membantu masyarakat.</p><b>🚓 Tempat: Kantor polisi</b></div>
+    <div class="card"><span class="emoji">👩‍🌾</span><h3>Petani</h3><p>Menanam dan merawat tanaman agar menghasilkan bahan pangan.</p><b>🌾 Tempat: Sawah/kebun</b></div>
+    <div class="card"><span class="emoji">✈️</span><h3>Pilot</h3><p>Menerbangkan pesawat dan membawa penumpang.</p><b>🛫 Tempat: Pesawat/bandara</b></div>
+    <div class="card"><span class="emoji">📦</span><h3>Kurir</h3><p>Mengantarkan barang atau paket kepada penerima.</p><b>🏠 Tempat: Berbagai tempat</b></div>
+  </div>
+  <div class="tip">⭐ Ingat! Semua profesi yang dilakukan dengan baik dan jujur itu penting dan harus kita hargai.</div>
+  <button class="btn" onclick="showPage('permainan',document.querySelectorAll('nav button')[3])">Main Yuk! 🎮</button>
+</section>
+
+<section id="permainan" class="page">
+  <h2>🎮 Permainan: Siapa Aku?</h2>
+  <p>Baca petunjuknya, lalu pilih profesi yang tepat!</p>
+  <div class="quiz">
+    <h3>🔎 Aku mengajar anak-anak di sekolah. Siapakah aku?</h3>
+    <button class="option" onclick="game(this,true)">👩‍🏫 Guru</button>
+    <button class="option" onclick="game(this,false)">👨‍🍳 Koki</button>
+    <button class="option" onclick="game(this,false)">👩‍🌾 Petani</button>
+    <div class="feedback" id="g1"></div>
+  </div>
+  <div class="quiz">
+    <h3>🔎 Aku memeriksa orang yang sedang sakit. Siapakah aku?</h3>
+    <button class="option" onclick="game2(this,false)">👨‍🚒 Pemadam kebakaran</button>
+    <button class="option" onclick="game2(this,true)">👨‍⚕️ Dokter</button>
+    <button class="option" onclick="game2(this,false)">👮 Polisi</button>
+    <div class="feedback" id="g2"></div>
+  </div>
+  <button class="btn" onclick="showPage('kuis',document.querySelectorAll('nav button')[4])">Lanjut ke Kuis 📝</button>
+</section>
+
+<section id="kuis" class="page">
+  <h2>📝 Kuis Seru</h2>
+  <p>Pilih satu jawaban yang paling tepat. Yuk, coba sendiri!</p>
+  <div class="score" id="score">Skor: 0 / 5</div>
+
+  <div class="quiz"><h3>1. Siapakah yang mengajar di sekolah?</h3>
+    <button class="option q1" onclick="answer(this,1,true)">Guru</button>
+    <button class="option q1" onclick="answer(this,1,false)">Petani</button>
+    <button class="option q1" onclick="answer(this,1,false)">Koki</button>
+    <div id="f1" class="feedback"></div>
+  </div>
+
+  <div class="quiz"><h3>2. Siapakah yang merawat orang sakit?</h3>
+    <button class="option q2" onclick="answer(this,2,false)">Pilot</button>
+    <button class="option q2" onclick="answer(this,2,true)">Dokter</button>
+    <button class="option q2" onclick="answer(this,2,false)">Kurir</button>
+    <div id="f2" class="feedback"></div>
+  </div>
+
+  <div class="quiz"><h3>3. Siapakah yang menanam padi di sawah?</h3>
+    <button class="option q3" onclick="answer(this,3,true)">Petani</button>
+    <button class="option q3" onclick="answer(this,3,false)">Polisi</button>
+    <button class="option q3" onclick="answer(this,3,false)">Dokter</button>
+    <div id="f3" class="feedback"></div>
+  </div>
+
+  <div class="quiz"><h3>4. Siapakah yang memadamkan api?</h3>
+    <button class="option q4" onclick="answer(this,4,false)">Guru</button>
+    <button class="option q4" onclick="answer(this,4,false)">Pilot</button>
+    <button class="option q4" onclick="answer(this,4,true)">Pemadam Kebakaran</button>
+    <div id="f4" class="feedback"></div>
+  </div>
+
+  <div class="quiz"><h3>5. Siapakah yang menerbangkan pesawat?</h3>
+    <button class="option q5" onclick="answer(this,5,true)">Pilot</button>
+    <button class="option q5" onclick="answer(this,5,false)">Koki</button>
+    <button class="option q5" onclick="answer(this,5,false)">Polisi</button>
+    <div id="f5" class="feedback"></div>
+  </div>
+
+  <button class="btn" onclick="finish()">🏆 Lihat Hasil</button>
+  <div class="tip" id="result">Ayo kerjakan semua soal terlebih dahulu!</div>
+</section>
+</main>
+
+<footer>🌈 Belajar itu menyenangkan! — Media Pembelajaran Interaktif Kelas 1 SD</footer>
+</div>
+
+<script>
+let score=0, answered={};
+const pages=['home','tujuan','materi','permainan','kuis'];
+function showPage(id,btn){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  document.querySelectorAll('nav button').forEach(b=>b.classList.remove('active'));
+  if(btn) btn.classList.add('active');
+  const i=pages.indexOf(id);
+  const pct=[20,40,60,80,100][Math.max(0,i)];
+  document.getElementById('bar').style.width=pct+'%';
+  document.getElementById('pct').textContent=pct+'%';
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function game(el,ok){el.classList.add(ok?'correct':'wrong');document.getElementById('g1').textContent=ok?'🎉 Hebat! Jawabanmu benar!':'😊 Coba lagi, ya!';}
+function game2(el,ok){el.classList.add(ok?'correct':'wrong');document.getElementById('g2').textContent=ok?'🎉 Hebat! Jawabanmu benar!':'😊 Coba lagi, ya!';}
+function answer(el,n,ok){
+  if(answered[n]) return;
+  answered[n]=true;
+  document.querySelectorAll('.q'+n).forEach(b=>b.disabled=true);
+  el.classList.add(ok?'correct':'wrong');
+  document.getElementById('f'+n).textContent=ok?'✅ Benar!':'❌ Belum tepat. Yuk ingat lagi materinya!';
+  if(ok) score++;
+  document.getElementById('score').textContent='Skor: '+score+' / 5';
+}
+function finish(){
+  const done=Object.keys(answered).length;
+  if(done<5){document.getElementById('result').textContent='📌 Kamu baru menjawab '+done+' dari 5 soal. Selesaikan semuanya dulu, ya!';return;}
+  let msg=score===5?'🏆 Sempurna! Kamu hebat sekali!':score>=3?'🌟 Bagus! Terus belajar, ya!':'💪 Tidak apa-apa. Yuk pelajari materinya lagi!';
+  document.getElementById('result').textContent=msg+' Nilaimu: '+(score*20);
+}
+</script>
+</body>
+</html>
